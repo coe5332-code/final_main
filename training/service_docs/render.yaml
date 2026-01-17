@@ -1,0 +1,49 @@
+services:
+  # ========================================
+  # BACKEND API SERVICE
+  # ========================================
+  - type: web
+    name: bsk-backend-api
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python -c "import nltk; nltk.download('stopwords', quiet=True)"
+    startCommand: cd backend && python run.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: RENDER
+        value: "true"
+      - key: DATA_SOURCE
+        value: csv
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: PORT
+        value: "10000"
+    healthCheckPath: /health
+    autoDeploy: true
+
+  # ========================================
+  # FRONTEND STREAMLIT SERVICE
+  # ========================================
+  - type: web
+    name: bsk-frontend-dashboard
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: streamlit run frontend/app.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DATA_SOURCE
+        value: csv
+      # ⚠️ CRITICAL: Backend URL will be auto-set after first deploy
+      - key: BACKEND_URL
+        value: https://bsk-backend-api.onrender.com
+    autoDeploy: true

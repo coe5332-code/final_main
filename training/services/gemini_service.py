@@ -12,7 +12,6 @@
 # # CONFIG
 # # -------------------------------------------------
 # GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY") or "PASTE_API_KEY_HERE"
-# GOOGLE_API_KEY = "AIzaSyD_jXVrYN4hQW3Vc_gpBuAlBonohC9peTw"  # REMOVE BEFORE SHARING CODE
 # client = genai.Client(api_key=GOOGLE_API_KEY)
 
 # MODEL_NAME = "gemini-2.5-flash-lite"
