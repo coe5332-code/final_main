@@ -536,59 +536,72 @@ if page_mode == "🔹 Create New Video":
             key="video_uploader",
         )
 
+        # Show preview if video is selected
         if uploaded_video:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
-                tmp.write(uploaded_video.read())
-                temp_path = tmp.name
+            st.video(uploaded_video)
+            
+            col1, col2 = st.columns([1, 4])
+            with col1:
+                upload_button = st.button("📤 Upload Video", type="primary", key="upload_video_btn")
+            with col2:
+                if st.button("🔄 Choose Different Video"):
+                    st.rerun()
+            
+            # Only process when button is clicked
+            if upload_button:
+                with st.spinner("Uploading video..."):
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
+                        tmp.write(uploaded_video.read())
+                        temp_path = tmp.name
 
-            video_path, version, db_success, db_message = save_video_with_version(
-                video_source=temp_path,
-                service_id=selected_service_id,
-                service_name=service_details["service_name"],
-                source_type="uploaded",
-                is_upload=True,
-            )
+                    video_path, version, db_success, db_message = save_video_with_version(
+                        video_source=temp_path,
+                        service_id=selected_service_id,
+                        service_name=service_details["service_name"],
+                        source_type="uploaded",
+                        is_upload=True,
+                    )
 
-            os.remove(temp_path)
+                    os.remove(temp_path)
 
-            # Show status
-            if db_success:
-                st.markdown(
-                    f"""
-                <div class="success-box">
-                    <strong>✅ Upload Successful!</strong><br>
-                    • Video saved as version {version}<br>
-                    • Database record created<br>
-                    • {db_message}
-                </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-            else:
-                st.markdown(
-                    f"""
-                <div class="error-box">
-                    <strong>⚠️ Partial Success</strong><br>
-                    • Video file saved as version {version}<br>
-                    • Database record failed: {db_message}<br>
-                    • Check API connection and try again
-                </div>
-                """,
-                    unsafe_allow_html=True,
-                )
+                    # Show status
+                    if db_success:
+                        st.markdown(
+                            f"""
+                        <div class="success-box">
+                            <strong>✅ Upload Successful!</strong><br>
+                            • Video saved as version {version}<br>
+                            • Database record created<br>
+                            • {db_message}
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            f"""
+                        <div class="error-box">
+                            <strong>⚠️ Partial Success</strong><br>
+                            • Video file saved as version {version}<br>
+                            • Database record failed: {db_message}<br>
+                            • Check API connection and try again
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
 
-            st.video(video_path)
+                    st.video(video_path)
 
-            with open(video_path, "rb") as f:
-                st.download_button(
-                    "📥 Download Video",
-                    data=f.read(),
-                    file_name=os.path.basename(video_path),
-                    mime="video/mp4",
-                )
+                    with open(video_path, "rb") as f:
+                        st.download_button(
+                            "📥 Download Video",
+                            data=f.read(),
+                            file_name=os.path.basename(video_path),
+                            mime="video/mp4",
+                        )
 
-            if st.button("🔄 Upload Another"):
-                st.rerun()
+                    if st.button("🔄 Upload Another", key="upload_another_btn"):
+                        st.rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
 
