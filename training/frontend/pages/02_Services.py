@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from utils import fetch_data_with_controls
+from page_utils import fetch_data_with_controls
 
 def show_services():
     st.header("Services")

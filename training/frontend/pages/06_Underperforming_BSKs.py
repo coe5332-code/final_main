@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils import fetch_data_with_controls
+from page_utils import fetch_data_with_controls
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
