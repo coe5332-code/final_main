@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Float, Text
+from datetime import datetime, timezone
 from .database import Base
+
 
 class BSKMaster(Base):
     __tablename__ = "ml_bsk_master"
@@ -30,6 +32,7 @@ class BSKMaster(Base):
     sub_div_id = Column(Integer)
     pin = Column(String(10))
 
+
 class DEOMaster(Base):
     __tablename__ = "ml_deo_master"
     __table_args__ = {"schema": "dbo"}
@@ -54,6 +57,7 @@ class DEOMaster(Base):
     is_active = Column(Boolean)
     bsk_post = Column(String(100))
 
+
 class ServiceMaster(Base):
     __tablename__ = "ml_service_master"
     __table_args__ = {"schema": "dbo"}
@@ -74,6 +78,7 @@ class ServiceMaster(Base):
     eligibility_criteria = Column(Text)
     required_doc = Column(Text)
 
+
 class Provision(Base):
     __tablename__ = "ml_provision"
     __table_args__ = {"schema": "dbo"}
@@ -88,6 +93,7 @@ class Provision(Base):
     prov_date = Column(Text)
     docket_no = Column(String)
 
+
 class BlockMunicipality(Base):
     __tablename__ = "ml_block_municipality"
     __table_args__ = {"schema": "dbo"}
@@ -96,6 +102,7 @@ class BlockMunicipality(Base):
     sub_div_id = Column(Integer)
     district_id = Column(Integer)
     bm_type = Column(String)
+
 
 class CitizenMasterV2(Base):
     __tablename__ = "ml_citizen_master_v2"
@@ -115,11 +122,13 @@ class CitizenMasterV2(Base):
     caste = Column(String(50))
     religion = Column(String(30))
 
+
 class DepartmentMaster(Base):
     __tablename__ = "ml_department_master"
     __table_args__ = {"schema": "dbo"}
     dept_id = Column(Integer, primary_key=True, index=True)
     dept_name = Column(String(600))
+
 
 class District(Base):
     __tablename__ = "ml_district"
@@ -128,6 +137,7 @@ class District(Base):
     district_name = Column(String(50))
     district_code = Column(String(20))
     grp = Column(String(10))
+
 
 class GPWardMaster(Base):
     __tablename__ = "ml_gp_ward_master"
@@ -138,10 +148,33 @@ class GPWardMaster(Base):
     block_muni_id = Column(String)
     gp_ward_name = Column(String)
 
+
 class PostOfficeMaster(Base):
     __tablename__ = "ml_post_office_master"
     __table_args__ = {"schema": "dbo"}
     post_office_id = Column(Integer, primary_key=True, index=True)
     post_office_name = Column(String(250))
     pin_code = Column(String(7))
-    district_id = Column(Integer) 
+    district_id = Column(Integer)
+
+
+# At the top of your models.py file, update the imports:
+
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy.sql import func
+from datetime import datetime
+
+# Then in your ServiceVideo model, update the DateTime columns:
+
+class ServiceVideo(Base):
+    __tablename__ = "service_videos"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    service_id = Column(Integer, nullable=False, index=True)
+    service_name = Column(Text)
+    video_version = Column(Integer, nullable=False)
+    source_type = Column(Text)
+    is_new = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+

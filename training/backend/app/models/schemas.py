@@ -203,3 +203,29 @@ class PostOfficeMaster(BaseModel):
     district_id: Optional[int]
     class Config:
         from_attributes = True 
+        
+from pydantic import BaseModel
+from datetime import datetime
+from typing import Optional
+
+class ServiceVideoBase(BaseModel):
+    service_id: int
+    service_name: str
+    video_version: int
+    source_type: str
+    is_new: bool = False
+
+class ServiceVideoCreate(ServiceVideoBase):
+    pass
+
+class ServiceVideoUpdate(BaseModel):
+    is_new: Optional[bool] = None
+    updated_at: Optional[datetime] = None
+
+class ServiceVideo(ServiceVideoBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True  # For Pydantic v2 (or use orm_mode = True for v1)

@@ -27,9 +27,18 @@ from sqlalchemy.orm import Session
 
 # Local application imports
 from app.models import models
-from app.models.schemas import BSKMaster, ServiceMaster, DEOMaster, Provision
+from app.models.schemas import (
+    BSKMaster, 
+    ServiceMaster, 
+    DEOMaster, 
+    Provision,
+    ServiceVideo,          # ✅ Add this - Pydantic schema
+    ServiceVideoCreate,
+    ServiceVideoUpdate     # ✅ Add this too
+)
 from app.models.database import engine, get_db
-
+from typing import Optional
+from datetime import datetime
 # Configure module paths for AI service and training modules
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../ai_service"))
@@ -665,3 +674,72 @@ def service_training_recommendation(
     # Return detailed recommendations up to limit
     logger.info(f"Returning {min(limit, len(recommendations))} detailed recommendations")
     return recommendations[:limit]
+
+
+from app.models.schemas import ServiceVideo, ServiceVideoCreate, ServiceVideoUpdate
+
+# GET endpoint
+@app.get("/service_videos/{service_id}", response_model=List[ServiceVideo], tags=["Service Videos"])
+def get_service_videos(service_id: int, db: Session = Depends(get_db)):
+    """Get all videos for a specific service"""
+    videos = db.query(models.ServiceVideo).filter(
+        models.ServiceVideo.service_id == service_id
+    ).all()
+    return videos
+
+# POST endpoint
+@app.post("/service_videos/", response_model=ServiceVideo, tags=["Service Videos"])
+def create_service_video(video: ServiceVideoCreate, db: Session = Depends(get_db)):
+    """Create a new video record"""
+    db_video = models.ServiceVideo(**video.dict())
+    db.add(db_video)
+    db.commit()
+    db.refresh(db_video)
+    return db_video
+
+# PUT endpoint
+@app.put("/service_videos/{service_id}/{version}", response_model=ServiceVideo, tags=["Service Videos"])
+def update_service_video(
+    service_id: int, 
+    version: int,
+    video_update: ServiceVideoUpdate,
+    db: Session = Depends(get_db)
+):
+    """Update existing video record"""
+    video = db.query(models.ServiceVideo).filter(
+        models.ServiceVideo.service_id == service_id,
+        models.ServiceVideo.video_version == version
+    ).first()
+    
+    if not video:
+        raise HTTPException(status_code=404, detail="Video record not found")
+    
+    # Update fields
+    for key, value in video_update.dict(exclude_unset=True).items():
+        setattr(video, key, value)
+    
+    video.updated_at = datetime.now()
+    video.is_new = True
+    db.commit()
+    db.refresh(video)
+    return video
+
+# PATCH endpoint
+@app.patch("/service_videos/{service_id}/mark_old", tags=["Service Videos"])
+def mark_videos_as_old(
+    service_id: int, 
+    exclude_version: Optional[int] = None, 
+    db: Session = Depends(get_db)
+):
+    """Mark all videos except the specified version as old"""
+    query = db.query(models.ServiceVideo).filter(
+        models.ServiceVideo.service_id == service_id
+    )
+    
+    if exclude_version:
+        query = query.filter(models.ServiceVideo.video_version != exclude_version)
+    
+    query.update({"is_new": False, "updated_at": datetime.now()})
+    db.commit()
+    
+    return {"status": "success", "service_id": service_id}
