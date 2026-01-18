@@ -294,8 +294,8 @@ if __name__ == "__main__":
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../backend')))
     
     try:
-        from app.database import SessionLocal
-        from app import models
+        from app.models.database import SessionLocal
+        from app.models import models
         
         print("=" * 80)
         print("TRAINING RECOMMENDATION SYSTEM - LOCAL TEST")

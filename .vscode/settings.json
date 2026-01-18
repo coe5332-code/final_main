@@ -1,0 +1,8 @@
+{
+    "python.analysis.extraPaths": [
+        "./training",
+        "./training/backend",
+        "./training/deos_training",
+        "./training/ai_service"
+    ]
+}
