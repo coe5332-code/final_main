@@ -539,27 +539,33 @@ if page_mode == "🔹 Create New Video":
         # Show preview if video is selected
         if uploaded_video:
             st.video(uploaded_video)
-            
+
             col1, col2 = st.columns([1, 4])
             with col1:
-                upload_button = st.button("📤 Upload Video", type="primary", key="upload_video_btn")
+                upload_button = st.button(
+                    "📤 Upload Video", type="primary", key="upload_video_btn"
+                )
             with col2:
                 if st.button("🔄 Choose Different Video"):
                     st.rerun()
-            
+
             # Only process when button is clicked
             if upload_button:
                 with st.spinner("Uploading video..."):
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
+                    with tempfile.NamedTemporaryFile(
+                        delete=False, suffix=".mp4"
+                    ) as tmp:
                         tmp.write(uploaded_video.read())
                         temp_path = tmp.name
 
-                    video_path, version, db_success, db_message = save_video_with_version(
-                        video_source=temp_path,
-                        service_id=selected_service_id,
-                        service_name=service_details["service_name"],
-                        source_type="uploaded",
-                        is_upload=True,
+                    video_path, version, db_success, db_message = (
+                        save_video_with_version(
+                            video_source=temp_path,
+                            service_id=selected_service_id,
+                            service_name=service_details["service_name"],
+                            source_type="uploaded",
+                            is_upload=True,
+                        )
                     )
 
                     os.remove(temp_path)

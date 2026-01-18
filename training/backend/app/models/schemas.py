@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
+
 class BSKMaster(BaseModel):
     bsk_id: int
     bsk_name: Optional[str]
@@ -31,6 +32,7 @@ class BSKMaster(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ServiceMaster(BaseModel):
     service_id: int
     service_name: Optional[str]
@@ -51,12 +53,14 @@ class ServiceMaster(BaseModel):
     class Config:
         from_attributes = True
 
+
 class DepartmentMaster(BaseModel):
     department_id: int
     department_name: str
 
     class Config:
         from_attributes = True
+
 
 class DEOMaster(BaseModel):
     agent_id: int
@@ -82,6 +86,7 @@ class DEOMaster(BaseModel):
     class Config:
         from_attributes = True
 
+
 class CitizenMaster(BaseModel):
     citizen_id: int
     citizen_phone_no: str
@@ -103,6 +108,7 @@ class CitizenMaster(BaseModel):
     class Config:
         from_attributes = True
 
+
 class DistrictMaster(BaseModel):
     district_id: int
     district_name: str
@@ -112,8 +118,10 @@ class DistrictMaster(BaseModel):
     class Config:
         from_attributes = True
 
+
 from pydantic import BaseModel
 from typing import Optional
+
 
 class Provision(BaseModel):
     bsk_id: Optional[int]
@@ -128,6 +136,7 @@ class Provision(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class BSKTransaction(BaseModel):
     transaction_id: int
@@ -146,14 +155,17 @@ class BSKTransaction(BaseModel):
     class Config:
         from_attributes = True
 
+
 class BlockMunicipality(BaseModel):
     block_muni_id: int
     block_muni_name: Optional[str]
     sub_div_id: Optional[int]
     district_id: Optional[int]
     bm_type: Optional[str]
+
     class Config:
         from_attributes = True
+
 
 class CitizenMasterV2(BaseModel):
     citizen_id: str
@@ -170,22 +182,28 @@ class CitizenMasterV2(BaseModel):
     age: Optional[int]
     caste: Optional[str]
     religion: Optional[str]
+
     class Config:
         from_attributes = True
+
 
 class DepartmentMaster(BaseModel):
     dept_id: int
     dept_name: Optional[str]
+
     class Config:
         from_attributes = True
+
 
 class District(BaseModel):
     district_id: int
     district_name: Optional[str]
     district_code: Optional[str]
     grp: Optional[str]
+
     class Config:
         from_attributes = True
+
 
 class GPWardMaster(BaseModel):
     gp_id: int
@@ -193,20 +211,25 @@ class GPWardMaster(BaseModel):
     sub_div_id: Optional[int]
     block_muni_id: Optional[str]
     gp_ward_name: Optional[str]
+
     class Config:
         from_attributes = True
+
 
 class PostOfficeMaster(BaseModel):
     post_office_id: int
     post_office_name: Optional[str]
     pin_code: Optional[str]
     district_id: Optional[int]
+
     class Config:
-        from_attributes = True 
-        
+        from_attributes = True
+
+
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+
 
 class ServiceVideoBase(BaseModel):
     service_id: int
@@ -216,8 +239,10 @@ class ServiceVideoBase(BaseModel):
     is_new: bool = True
     is_done: bool = False
 
+
 class ServiceVideoCreate(ServiceVideoBase):
     pass
+
 
 class ServiceVideoUpdate(BaseModel):
     service_name: Optional[str] = None
@@ -225,6 +250,7 @@ class ServiceVideoUpdate(BaseModel):
     source_type: Optional[str] = None
     is_new: Optional[bool] = None
     is_done: Optional[bool] = None
+
 
 class ServiceVideo(ServiceVideoBase):
     created_at: datetime

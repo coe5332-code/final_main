@@ -2,17 +2,23 @@ from utils.avatar_utils import add_avatar_to_slide
 import os
 
 from moviepy.editor import (
-    ImageClip, concatenate_videoclips, CompositeVideoClip,
-    AudioFileClip, concatenate_audioclips, TextClip, ColorClip, vfx
+    ImageClip,
+    concatenate_videoclips,
+    CompositeVideoClip,
+    AudioFileClip,
+    concatenate_audioclips,
+    TextClip,
+    ColorClip,
+    vfx,
 )
 from moviepy.config import change_settings
 
 # -------------------------------------------------
 # ImageMagick config
 # -------------------------------------------------
-change_settings({
-    "IMAGEMAGICK_BINARY": r"C:\Program Files\ImageMagick-7.1.2-Q16-HDRI\magick.exe"
-})
+change_settings(
+    {"IMAGEMAGICK_BINARY": r"C:\Program Files\ImageMagick-7.1.2-Q16-HDRI\magick.exe"}
+)
 
 VIDEO_W, VIDEO_H = 1280, 720
 TOP_TEXT_HEIGHT = int(VIDEO_H * 0.6)
@@ -54,7 +60,7 @@ def create_slide(title, points, image_path, audio_file):
             color="white",
             font="Arial-Bold",
             size=(VIDEO_W - 120, None),
-            method="caption"
+            method="caption",
         )
         .set_position(("center", 50))
         .set_start(0.2)
@@ -69,7 +75,7 @@ def create_slide(title, points, image_path, audio_file):
             color="black",
             font="Arial-Bold",
             size=(VIDEO_W - 120, None),
-            method="caption"
+            method="caption",
         )
         .set_position(("center", 52))
         .set_start(0.2)
@@ -95,7 +101,7 @@ def create_slide(title, points, image_path, audio_file):
                 color="white",
                 font="Arial",
                 size=(VIDEO_W - 200, None),
-                method="caption"
+                method="caption",
             )
             .set_position((100, start_y + i * line_gap))
             .set_start(appear_time)
@@ -110,7 +116,7 @@ def create_slide(title, points, image_path, audio_file):
                 color="black",
                 font="Arial",
                 size=(VIDEO_W - 200, None),
-                method="caption"
+                method="caption",
             )
             .set_position((102, start_y + i * line_gap + 2))
             .set_start(appear_time)
@@ -120,7 +126,6 @@ def create_slide(title, points, image_path, audio_file):
 
         bullet_clips.extend([shadow, bullet])
 
-
     # -----------------------------
     # CONTENT IMAGE (BOTTOM-RIGHT, STATIC)
     # -----------------------------
@@ -129,15 +134,13 @@ def create_slide(title, points, image_path, audio_file):
         img = (
             ImageClip(image_path)
             .resize(height=220)  # fixed, clean size
-            .set_position((
-                VIDEO_W - 260,    # right margin
-                VIDEO_H - 260     # bottom margin
-            ))
+            .set_position(
+                (VIDEO_W - 260, VIDEO_H - 260)  # right margin  # bottom margin
+            )
             .set_duration(duration)
         )
 
         image_clips.append(img)
-
 
     # -----------------------------
     # FOOTER
@@ -149,18 +152,15 @@ def create_slide(title, points, image_path, audio_file):
             color="lightgray",
             font="Arial",
             size=(VIDEO_W - 80, None),
-            method="caption"
+            method="caption",
         )
         .set_position(("center", VIDEO_H - 40))
         .set_duration(duration)
     )
 
     slide = CompositeVideoClip(
-        [bg, overlay, title_shadow, title_clip]
-        + bullet_clips
-        + image_clips
-        + [footer],
-        size=(VIDEO_W, VIDEO_H)
+        [bg, overlay, title_shadow, title_clip] + bullet_clips + image_clips + [footer],
+        size=(VIDEO_W, VIDEO_H),
     ).set_duration(duration)
 
     slide = slide.set_audio(audio_clip)
@@ -178,11 +178,7 @@ def create_slide(title, points, image_path, audio_file):
 # -------------------------------------------------
 def combine_slides_and_audio(video_clips, audio_paths, service_name=None):
     # Smooth overlap between slides
-    final_video = concatenate_videoclips(
-        video_clips,
-        method="compose",
-        padding=-0.4
-    )
+    final_video = concatenate_videoclips(video_clips, method="compose", padding=-0.4)
 
     audio_clips = [AudioFileClip(p) for p in audio_paths]
     final_audio = concatenate_audioclips(audio_clips)
@@ -205,7 +201,7 @@ def combine_slides_and_audio(video_clips, audio_paths, service_name=None):
         fps=30,
         preset="medium",
         bitrate="2000k",
-        threads=4
+        threads=4,
     )
 
     return output_path

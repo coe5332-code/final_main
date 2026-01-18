@@ -16,6 +16,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 MODEL_NAME = "gpt-4o-mini"  # fast + reliable for structured output
 
+
 # -------------------------------------------------
 # SAFE JSON EXTRACTOR
 # -------------------------------------------------
@@ -85,14 +86,11 @@ def generate_slides_from_raw(raw_text: str):
         messages=[
             {
                 "role": "system",
-                "content": "You are a strict JSON generator. Output JSON only."
+                "content": "You are a strict JSON generator. Output JSON only.",
             },
-            {
-                "role": "user",
-                "content": build_prompt(raw_text)
-            }
+            {"role": "user", "content": build_prompt(raw_text)},
         ],
-        temperature=0.2
+        temperature=0.2,
     )
 
     text_output = response.choices[0].message.content

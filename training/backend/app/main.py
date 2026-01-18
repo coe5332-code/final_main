@@ -696,18 +696,21 @@ def service_training_recommendation(
 
 from app.models.schemas import ServiceVideo, ServiceVideoCreate, ServiceVideoUpdate
 
+
 # POST endpoint - Creates NEW record or UPDATES existing
 @app.post("/service_videos/", response_model=ServiceVideo, tags=["Service Videos"])
-def create_or_update_service_video(video: ServiceVideoCreate, db: Session = Depends(get_db)):
+def create_or_update_service_video(
+    video: ServiceVideoCreate, db: Session = Depends(get_db)
+):
     """Create or update video record for a service"""
-    
+
     # Check if record already exists
     existing_video = (
         db.query(models.ServiceVideo)
         .filter(models.ServiceVideo.service_id == video.service_id)
         .first()
     )
-    
+
     if existing_video:
         # ✅ UPDATE existing record - increment version
         existing_video.video_version = video.video_version
@@ -715,7 +718,7 @@ def create_or_update_service_video(video: ServiceVideoCreate, db: Session = Depe
         existing_video.is_new = True
         existing_video.is_done = False
         existing_video.updated_at = datetime.now()
-        
+
         db.commit()
         db.refresh(existing_video)
         return existing_video
@@ -741,10 +744,10 @@ def get_service_video(service_id: int, db: Session = Depends(get_db)):
         .filter(models.ServiceVideo.service_id == service_id)
         .first()
     )
-    
+
     if not video:
         raise HTTPException(status_code=404, detail="No video found for this service")
-    
+
     return video
 
 
@@ -788,10 +791,10 @@ def mark_video_as_old(service_id: int, db: Session = Depends(get_db)):
         .filter(models.ServiceVideo.service_id == service_id)
         .first()
     )
-    
+
     if not video:
         raise HTTPException(status_code=404, detail="Video record not found")
-    
+
     video.is_new = False
     video.updated_at = datetime.now()
     db.commit()

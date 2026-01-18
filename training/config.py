@@ -1,20 +1,3 @@
-# import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# UNSPLASH_URL = 'https://api.unsplash.com/search/photos'
-# UNSPLASH_ACCESS_KEY = os.getenv('UNSPLASH_ACCESS_KEY')
-# GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-
-# VOICES = [
-#     'en-US-AriaNeural', 'en-US-GuyNeural', 'en-GB-SoniaNeural', 'en-AU-NatashaNeural',
-#     'en-IN-NeerjaNeural', 'en-CA-ClaraNeural', 'en-NZ-MollyNeural', 'en-ZA-LeahNeural'
-# ]
-
-
-
-
 """
 Configuration management for BSK Training Video Generator
 Loads all settings from environment variables with proper fallbacks
@@ -125,30 +108,34 @@ if platform.system() == "Windows":
 else:
     IMAGEMAGICK_BINARY = shutil.which("magick") or shutil.which("convert")
 
+
 # ============================================================
 # VALIDATION
 # ============================================================
 def validate_config():
     """Validate that all required configuration is present"""
     errors = []
-    
+
     # Check API keys
     if not GOOGLE_API_KEY:
         errors.append("GOOGLE_API_KEY not set in environment")
     if not UNSPLASH_ACCESS_KEY:
         errors.append("UNSPLASH_ACCESS_KEY not set in environment")
-    
+
     # Check external tools
     if not TESSERACT_CMD:
-        errors.append("Tesseract OCR not found. Install from https://github.com/tesseract-ocr/tesseract")
+        errors.append(
+            "Tesseract OCR not found. Install from https://github.com/tesseract-ocr/tesseract"
+        )
     if not IMAGEMAGICK_BINARY:
         errors.append("ImageMagick not found. Install from https://imagemagick.org/")
-    
+
     # Check required assets
     if not FALLBACK_IMAGE.exists():
         errors.append(f"Fallback image not found: {FALLBACK_IMAGE}")
-    
+
     return errors
+
 
 # ============================================================
 # STARTUP CHECK
@@ -157,9 +144,9 @@ if __name__ == "__main__":
     print("=" * 60)
     print("BSK Training Video Generator - Configuration Check")
     print("=" * 60)
-    
+
     errors = validate_config()
-    
+
     if errors:
         print("\n⚠️  Configuration Issues Found:")
         for error in errors:

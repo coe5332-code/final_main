@@ -70,9 +70,11 @@ def prepare_slide_image(image_path):
 
         return processed_path
 
+
 # -------------------------------------------------
 # FALLBACK IMAGE GENERATOR
 # -------------------------------------------------
+
 
 def create_fallback_image(output_path="images/fallback_video.jpg"):
     """
