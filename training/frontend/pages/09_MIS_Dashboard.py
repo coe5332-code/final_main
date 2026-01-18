@@ -126,7 +126,8 @@ st.markdown(
 )
 
 # API Configuration
-API_BASE_URL = "http://localhost:54300"
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:54300")
+
 VIDEOS_BASE_DIR = "videos"
 
 
@@ -280,7 +281,7 @@ with st.sidebar:
 
     st.markdown("---")
 
-    if st.button("🔄 Refresh Data", use_container_width=True):
+    if st.button("🔄 Refresh Data", width='stretch'):
         st.cache_data.clear()
         st.rerun()
 

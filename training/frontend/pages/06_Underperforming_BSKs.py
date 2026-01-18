@@ -136,7 +136,7 @@ with col3:
 with col4:
     st.markdown("<br>", unsafe_allow_html=True)  # Add spacing
     check_btn = st.button(
-        "Analyze Performance", type="primary", use_container_width=True
+        "Analyze Performance", type="primary", width='stretch'
     )
 
 # State for filters
@@ -162,7 +162,7 @@ if st.session_state.filters:
 
         # Fetch data from backend (move this here to use sort_order)
         params["sort_order"] = sort_order
-        API_BASE_URL = "http://localhost:54300"
+        API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:54300")
         df = pd.DataFrame()
         try:
             import requests
@@ -267,7 +267,7 @@ if st.session_state.filters:
                 paper_bgcolor="rgba(0,0,0,0)",
                 font=dict(size=12),
             )
-            st.plotly_chart(fig_district, use_container_width=True)
+            st.plotly_chart(fig_district, width='stretch')
 
         with col2:
             # Block distribution
@@ -290,7 +290,7 @@ if st.session_state.filters:
                 font=dict(size=12),
                 xaxis_tickangle=-45,
             )
-            st.plotly_chart(fig_block, use_container_width=True)
+            st.plotly_chart(fig_block, width='stretch')
 
         # Debug: Show available columns
         st.markdown("## Data Analysis")
@@ -392,7 +392,7 @@ if st.session_state.filters:
                     margin={"r": 0, "t": 40, "l": 0, "b": 0},
                     legend_title_text="District",
                 )
-                st.plotly_chart(fig_map, use_container_width=True)
+                st.plotly_chart(fig_map, width='stretch')
                 # Display coordinate statistics
                 st.markdown("### Coordinate Statistics")
                 col1, col2 = st.columns(2)
@@ -498,7 +498,7 @@ if st.session_state.filters:
                         .reset_index(drop=True)
                     )
                     if not deo_df.empty:
-                        st.dataframe(deo_df, use_container_width=True)
+                        st.dataframe(deo_df, width='stretch')
                     else:
                         st.info("No DEO data available for this BSK")
                 else:

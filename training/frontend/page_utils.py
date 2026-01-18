@@ -1,7 +1,8 @@
 import streamlit as st
 import requests
+import os
 
-API_BASE_URL = "http://localhost:54300"
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:54300")
 
 
 def fetch_data_with_controls(endpoint):

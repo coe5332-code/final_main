@@ -13,11 +13,11 @@ def show_deos():
         if "is_active" in df.columns:
             st.subheader("Active vs Inactive DEOs")
             fig = px.pie(df, names="is_active", title="Active vs Inactive DEOs")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         if "bsk_name" in df.columns:
             st.subheader("DEOs by BSK Center")
             fig = px.bar(df, x="bsk_name", title="DEOs by BSK Center")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 
 show_deos()

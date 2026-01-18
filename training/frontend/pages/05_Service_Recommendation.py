@@ -21,8 +21,7 @@ sys.path.append(
 )
 
 # Configuration
-API_BASE_URL = "http://localhost:54300"
-
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:54300")
 # Import AI service functions with error handling and direct database access
 try:
     # First try to import the AI functions
@@ -361,13 +360,13 @@ if submitted:
     ):
         if isinstance(similar_services, pd.DataFrame):
             top_similar = similar_services.head(5).reset_index(drop=True)
-            st.dataframe(top_similar, use_container_width=True, hide_index=True)
+            st.dataframe(top_similar, width='stretch', hide_index=True)
         elif isinstance(similar_services, list) and isinstance(
             similar_services[0], dict
         ):
             top_similar = similar_services[:5]
             st.dataframe(
-                pd.DataFrame(top_similar), use_container_width=True, hide_index=True
+                pd.DataFrame(top_similar), width='stretch', hide_index=True
             )
         elif isinstance(similar_services, list):
             top_similar = similar_services[:5]
@@ -483,7 +482,7 @@ if st.session_state.recommendations is not None:
         display_cols = [col for col in display_data.columns if col not in exclude_cols]
 
         st.dataframe(
-            display_data[display_cols], use_container_width=True, hide_index=True
+            display_data[display_cols], width='stretch', hide_index=True
         )
     else:
         st.warning("No BSKs match the current filters.")
@@ -710,7 +709,7 @@ if st.session_state.recommendations is not None:
                         ]
                         st.dataframe(
                             selected_data[detail_cols],
-                            use_container_width=True,
+                            width='stretch',
                             hide_index=True,
                         )
         else:
@@ -790,7 +789,7 @@ if st.session_state.recommendations is not None:
                 )
 
                 st.write("**Performance by District:**")
-                st.dataframe(district_scores, use_container_width=True)
+                st.dataframe(district_scores, width='stretch')
 
     # Export functionality
     st.subheader("💾 Export Results")

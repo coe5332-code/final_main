@@ -13,11 +13,11 @@ def show_services():
         if "department_name" in df.columns:
             st.subheader("Services by Department")
             fig = px.bar(df, x="department_name", title="Services by Department")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         if "service_type" in df.columns:
             st.subheader("Service Type Distribution")
             fig = px.pie(df, names="service_type", title="Service Type Distribution")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 
 show_services()

@@ -68,7 +68,8 @@ css = """
 st.markdown(css, unsafe_allow_html=True)
 
 # API Configuration
-API_BASE_URL = "http://localhost:54300"
+import os
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:54300")
 
 
 # Fetch data for overview

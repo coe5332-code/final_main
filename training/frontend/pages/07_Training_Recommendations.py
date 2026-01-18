@@ -3,9 +3,10 @@ import pandas as pd
 import requests
 import plotly.express as px
 import plotly.graph_objects as go
-
+import os
 # Configuration
-API_URL = "http://localhost:54300/service_training_recomendation/"
+
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:54300")
 
 st.set_page_config(
     page_title="BSK Training Recommendations", page_icon="🎯", layout="wide"
@@ -65,7 +66,7 @@ st.markdown(
 @st.cache_data(ttl=300)
 def load_recommendations(limit=500):
     try:
-        response = requests.get(API_URL, params={"limit": limit})
+        response = requests.get(f"{API_BASE_URL}/service_training_recomendation/", params={"limit": limit})
         response.raise_for_status()
         return response.json()
     except Exception as e:
@@ -274,7 +275,7 @@ with tab1:
             st.markdown("### 👥 Data Entry Operators (DEOs)")
             deo_df = pd.DataFrame(bsk_data["deos"])
 
-            st.dataframe(deo_df, use_container_width=True, hide_index=True)
+            st.dataframe(deo_df, width='stretch', hide_index=True)
         elif not bsk_data["deos"]:
             st.info("ℹ️ No DEOs currently assigned to this BSK")
 
@@ -300,7 +301,7 @@ with tab1:
             ]
 
             st.dataframe(
-                service_df[display_cols], use_container_width=True, hide_index=True
+                service_df[display_cols], width='stretch', hide_index=True
             )
 
             # Service gap visualization
@@ -313,7 +314,7 @@ with tab1:
                 color_continuous_scale="Reds",
             )
             fig.update_layout(xaxis_tickangle=-45)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         else:
             st.info("ℹ️ No specific service gaps identified")
 
@@ -347,7 +348,7 @@ with tab2:
             color_continuous_scale="RdYlGn_r",
         )
         fig1.update_layout(xaxis_tickangle=-45)
-        st.plotly_chart(fig1, use_container_width=True)
+        st.plotly_chart(fig1, width='stretch')
 
     with col2:
         # Pie chart: Priority distribution
@@ -357,7 +358,7 @@ with tab2:
             names="district_name",
             title="Priority Distribution by District",
         )
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width='stretch')
 
     # Detailed table
     st.markdown("### 📊 Detailed District Summary")
@@ -365,7 +366,7 @@ with tab2:
         district_summary.style.background_gradient(
             subset=["total_priority"], cmap="RdYlGn_r"
         ),
-        use_container_width=True,
+        width='stretch',
         hide_index=True,
     )
 
@@ -418,7 +419,7 @@ with tab3:
                 color_continuous_scale="Reds",
             )
             fig1.update_layout(xaxis_tickangle=-45)
-            st.plotly_chart(fig1, use_container_width=True)
+            st.plotly_chart(fig1, width='stretch')
 
         with col2:
             # Service type distribution
@@ -431,7 +432,7 @@ with tab3:
                 names="service_type",
                 title="Training Demand by Service Type",
             )
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, width='stretch')
 
         # Detailed service table
         st.markdown("### 📋 Complete Service Analysis")
@@ -439,7 +440,7 @@ with tab3:
             service_summary.style.background_gradient(
                 subset=["bsk_count", "total_gap"], cmap="YlOrRd"
             ),
-            use_container_width=True,
+            width='stretch',
             hide_index=True,
         )
     else:
@@ -474,7 +475,7 @@ with tab4:
                 title="BSK Training Priority Map",
             )
             fig.update_layout(mapbox_style="carto-darkmatter")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
             st.markdown(
                 """
@@ -511,7 +512,7 @@ with tab5:
             csv_full,
             "training_recommendations_full.csv",
             "text/csv",
-            use_container_width=True,
+            width='stretch',
         )
 
     with col2:
@@ -531,7 +532,7 @@ with tab5:
             csv_summary,
             "training_recommendations_summary.csv",
             "text/csv",
-            use_container_width=True,
+            width='stretch',
         )
 
     with col3:
@@ -546,13 +547,13 @@ with tab5:
             csv_district,
             "district_summary.csv",
             "text/csv",
-            use_container_width=True,
+            width='stretch',
             disabled=not csv_district,
         )
 
     # Preview of export data
     with st.expander("📋 Preview Export Data", expanded=False):
-        st.dataframe(filtered_df.head(20), use_container_width=True)
+        st.dataframe(filtered_df.head(20), width='stretch')
 
 # Footer
 st.markdown("---")
