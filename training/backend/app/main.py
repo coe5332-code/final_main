@@ -32,9 +32,12 @@ from app.models.schemas import (
     ServiceMaster,
     DEOMaster,
     Provision,
-    ServiceVideo,  # ✅ Add this - Pydantic schema
+    ServiceVideo,
     ServiceVideoCreate,
-    ServiceVideoUpdate,  # ✅ Add this too
+    ServiceVideoUpdate,
+    ServiceVideo,
+    ServiceVideoCreate,
+    ServiceVideoUpdate,
 )
 from app.models.database import engine, get_db
 from typing import Optional
@@ -692,11 +695,6 @@ def service_training_recommendation(
     return recommendations[:limit]
 
 
-# Replace your existing service_videos endpoints with these:
-
-from app.models.schemas import ServiceVideo, ServiceVideoCreate, ServiceVideoUpdate
-
-
 # POST endpoint - Creates NEW record or UPDATES existing
 @app.post("/service_videos/", response_model=ServiceVideo, tags=["Service Videos"])
 def create_or_update_service_video(
@@ -800,7 +798,3 @@ def mark_video_as_old(service_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"status": "success", "service_id": service_id}
-
-
-# DELETE old endpoint that's no longer needed
-# Remove the mark_videos_as_old with exclude_version parameter

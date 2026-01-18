@@ -226,11 +226,6 @@ class PostOfficeMaster(BaseModel):
         from_attributes = True
 
 
-from pydantic import BaseModel
-from datetime import datetime
-from typing import Optional
-
-
 class ServiceVideoBase(BaseModel):
     service_id: int
     service_name: str
@@ -257,4 +252,4 @@ class ServiceVideo(ServiceVideoBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        from_attributes = True  # For Pydantic v2
+        from_attributes = True
