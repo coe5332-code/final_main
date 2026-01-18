@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from page_utils import fetch_data_with_controls
 
+
 def show_provisions():
     st.header("Provisions")
     provisions_data, limit, skip = fetch_data_with_controls("provisions/")
@@ -15,8 +16,9 @@ def show_provisions():
             st.plotly_chart(fig, use_container_width=True)
         if "prov_date" in df.columns:
             st.subheader("Provisions Over Time")
-            df['prov_date'] = pd.to_datetime(df['prov_date'], errors='coerce')
+            df["prov_date"] = pd.to_datetime(df["prov_date"], errors="coerce")
             fig = px.histogram(df, x="prov_date", title="Provisions Over Time")
             st.plotly_chart(fig, use_container_width=True)
 
-show_provisions() 
+
+show_provisions()

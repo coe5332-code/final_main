@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from page_utils import fetch_data_with_controls
 
+
 def show_services():
     st.header("Services")
     services_data, limit, skip = fetch_data_with_controls("services/")
@@ -18,4 +19,5 @@ def show_services():
             fig = px.pie(df, names="service_type", title="Service Type Distribution")
             st.plotly_chart(fig, use_container_width=True)
 
-show_services() 
+
+show_services()

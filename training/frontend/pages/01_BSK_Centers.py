@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from page_utils import fetch_data_with_controls
 
+
 def show_bsk_centers():
     st.header("BSK Centers")
     bsk_data, limit, skip = fetch_data_with_controls("bsk/")
@@ -18,4 +19,5 @@ def show_bsk_centers():
             fig = px.pie(df, names="bsk_type", title="BSK Type Distribution")
             st.plotly_chart(fig, use_container_width=True)
 
-show_bsk_centers() 
+
+show_bsk_centers()

@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
+
 class BSKMaster(BaseModel):
     bsk_id: int
     bsk_center: str
@@ -25,6 +26,7 @@ class BSKMaster(BaseModel):
     class Config:
         orm_mode = True
 
+
 class ServiceMaster(BaseModel):
     service_id: int
     service_name: str
@@ -41,12 +43,14 @@ class ServiceMaster(BaseModel):
     class Config:
         orm_mode = True
 
+
 class DepartmentMaster(BaseModel):
     department_id: int
     department_name: str
 
     class Config:
         orm_mode = True
+
 
 class DEOMaster(BaseModel):
     agent_id: int
@@ -69,6 +73,7 @@ class DEOMaster(BaseModel):
     class Config:
         orm_mode = True
 
+
 class CitizenMaster(BaseModel):
     citizen_id: int
     citizen_phone_no: str
@@ -90,6 +95,7 @@ class CitizenMaster(BaseModel):
     class Config:
         orm_mode = True
 
+
 class DistrictMaster(BaseModel):
     district_id: int
     district_name: str
@@ -98,6 +104,7 @@ class DistrictMaster(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class BSKTransaction(BaseModel):
     transaction_id: int
@@ -114,11 +121,13 @@ class BSKTransaction(BaseModel):
     service_name: str
 
     class Config:
-        orm_mode = True 
-        
+        orm_mode = True
+
+
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+
 
 class ServiceVideoBase(BaseModel):
     service_id: int
@@ -127,12 +136,15 @@ class ServiceVideoBase(BaseModel):
     source_type: str
     is_new: bool = False
 
+
 class ServiceVideoCreate(ServiceVideoBase):
     pass
+
 
 class ServiceVideoUpdate(BaseModel):
     is_new: Optional[bool] = None
     updated_at: Optional[datetime] = None
+
 
 class ServiceVideo(ServiceVideoBase):
     id: int

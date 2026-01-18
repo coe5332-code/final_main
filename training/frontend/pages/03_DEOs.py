@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from page_utils import fetch_data_with_controls
 
+
 def show_deos():
     st.header("Data Entry Operators (DEOs)")
     deo_data, limit, skip = fetch_data_with_controls("deo/")
@@ -18,4 +19,5 @@ def show_deos():
             fig = px.bar(df, x="bsk_name", title="DEOs by BSK Center")
             st.plotly_chart(fig, use_container_width=True)
 
-show_deos() 
+
+show_deos()
