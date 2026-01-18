@@ -212,20 +212,23 @@ class ServiceVideoBase(BaseModel):
     service_id: int
     service_name: str
     video_version: int
-    source_type: str
-    is_new: bool = False
+    source_type: str  # 'pdf', 'form', or 'uploaded'
+    is_new: bool = True
+    is_done: bool = False
 
 class ServiceVideoCreate(ServiceVideoBase):
     pass
 
 class ServiceVideoUpdate(BaseModel):
+    service_name: Optional[str] = None
+    video_version: Optional[int] = None
+    source_type: Optional[str] = None
     is_new: Optional[bool] = None
-    updated_at: Optional[datetime] = None
+    is_done: Optional[bool] = None
 
 class ServiceVideo(ServiceVideoBase):
-    id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
 
     class Config:
-        from_attributes = True  # For Pydantic v2 (or use orm_mode = True for v1)
+        from_attributes = True  # For Pydantic v2

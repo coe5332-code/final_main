@@ -166,15 +166,27 @@ from datetime import datetime
 
 # Then in your ServiceVideo model, update the DateTime columns:
 
+
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.sql import func
+from .database import Base
+
 class ServiceVideo(Base):
     __tablename__ = "service_videos"
+    __table_args__ = {"schema": "dbo"}
     
-    id = Column(Integer, primary_key=True, index=True)
-    service_id = Column(Integer, nullable=False, index=True)
-    service_name = Column(Text)
-    video_version = Column(Integer, nullable=False)
-    source_type = Column(Text)
-    is_new = Column(Boolean, default=False)
+    # ✅ service_id is now the PRIMARY KEY (one row per service)
+    service_id = Column(Integer, primary_key=True, index=True)
+    
+    # Core fields
+    service_name = Column(String(600), nullable=False)
+    video_version = Column(Integer, nullable=False, default=1)
+    source_type = Column(String(50), nullable=False)  # 'pdf', 'form', or 'uploaded'
+    
+    # Status flags
+    is_new = Column(Boolean, default=True)
+    is_done = Column(Boolean, default=True)
+    
+    # Timestamps - created_at stays same, updated_at changes
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-

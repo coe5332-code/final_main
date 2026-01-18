@@ -692,55 +692,77 @@ def service_training_recommendation(
     return recommendations[:limit]
 
 
+# Replace your existing service_videos endpoints with these:
+
 from app.models.schemas import ServiceVideo, ServiceVideoCreate, ServiceVideoUpdate
 
+# POST endpoint - Creates NEW record or UPDATES existing
+@app.post("/service_videos/", response_model=ServiceVideo, tags=["Service Videos"])
+def create_or_update_service_video(video: ServiceVideoCreate, db: Session = Depends(get_db)):
+    """Create or update video record for a service"""
+    
+    # Check if record already exists
+    existing_video = (
+        db.query(models.ServiceVideo)
+        .filter(models.ServiceVideo.service_id == video.service_id)
+        .first()
+    )
+    
+    if existing_video:
+        # ✅ UPDATE existing record - increment version
+        existing_video.video_version = video.video_version
+        existing_video.source_type = video.source_type
+        existing_video.is_new = True
+        existing_video.is_done = False
+        existing_video.updated_at = datetime.now()
+        
+        db.commit()
+        db.refresh(existing_video)
+        return existing_video
+    else:
+        # ✅ CREATE new record
+        db_video = models.ServiceVideo(**video.dict())
+        db.add(db_video)
+        db.commit()
+        db.refresh(db_video)
+        return db_video
 
-# GET endpoint
+
+# GET endpoint - Get video info for a service
 @app.get(
     "/service_videos/{service_id}",
-    response_model=List[ServiceVideo],
+    response_model=ServiceVideo,
     tags=["Service Videos"],
 )
-def get_service_videos(service_id: int, db: Session = Depends(get_db)):
-    """Get all videos for a specific service"""
-    videos = (
+def get_service_video(service_id: int, db: Session = Depends(get_db)):
+    """Get video record for a specific service"""
+    video = (
         db.query(models.ServiceVideo)
         .filter(models.ServiceVideo.service_id == service_id)
-        .all()
+        .first()
     )
-    return videos
+    
+    if not video:
+        raise HTTPException(status_code=404, detail="No video found for this service")
+    
+    return video
 
 
-# POST endpoint
-@app.post("/service_videos/", response_model=ServiceVideo, tags=["Service Videos"])
-def create_service_video(video: ServiceVideoCreate, db: Session = Depends(get_db)):
-    """Create a new video record"""
-    db_video = models.ServiceVideo(**video.dict())
-    db.add(db_video)
-    db.commit()
-    db.refresh(db_video)
-    return db_video
-
-
-# PUT endpoint
+# PUT endpoint - Update video record
 @app.put(
-    "/service_videos/{service_id}/{version}",
+    "/service_videos/{service_id}",
     response_model=ServiceVideo,
     tags=["Service Videos"],
 )
 def update_service_video(
     service_id: int,
-    version: int,
     video_update: ServiceVideoUpdate,
     db: Session = Depends(get_db),
 ):
     """Update existing video record"""
     video = (
         db.query(models.ServiceVideo)
-        .filter(
-            models.ServiceVideo.service_id == service_id,
-            models.ServiceVideo.video_version == version,
-        )
+        .filter(models.ServiceVideo.service_id == service_id)
         .first()
     )
 
@@ -752,28 +774,30 @@ def update_service_video(
         setattr(video, key, value)
 
     video.updated_at = datetime.now()
-    video.is_new = True
     db.commit()
     db.refresh(video)
     return video
 
 
-# PATCH endpoint
+# PATCH endpoint - Mark video as old/done
 @app.patch("/service_videos/{service_id}/mark_old", tags=["Service Videos"])
-def mark_videos_as_old(
-    service_id: int,
-    exclude_version: Optional[int] = None,
-    db: Session = Depends(get_db),
-):
-    """Mark all videos except the specified version as old"""
-    query = db.query(models.ServiceVideo).filter(
-        models.ServiceVideo.service_id == service_id
+def mark_video_as_old(service_id: int, db: Session = Depends(get_db)):
+    """Mark video as no longer new"""
+    video = (
+        db.query(models.ServiceVideo)
+        .filter(models.ServiceVideo.service_id == service_id)
+        .first()
     )
-
-    if exclude_version:
-        query = query.filter(models.ServiceVideo.video_version != exclude_version)
-
-    query.update({"is_new": False, "updated_at": datetime.now()})
+    
+    if not video:
+        raise HTTPException(status_code=404, detail="Video record not found")
+    
+    video.is_new = False
+    video.updated_at = datetime.now()
     db.commit()
 
     return {"status": "success", "service_id": service_id}
+
+
+# DELETE old endpoint that's no longer needed
+# Remove the mark_videos_as_old with exclude_version parameter
