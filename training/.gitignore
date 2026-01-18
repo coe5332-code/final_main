@@ -14,7 +14,7 @@ venv/
 env/
 ENV/
 .venv
-
+.newvenv/
 # Environment Variables (CRITICAL - Never commit!)
 .env
 
@@ -26,8 +26,8 @@ ENV/
 *~
 
 # Generated Content
-generated_pdfs/
-output_videos/
+# generated_pdfs/
+# output_videos/
 images/*.jpg
 images/*.png
 !images/fallback_video.jpg
